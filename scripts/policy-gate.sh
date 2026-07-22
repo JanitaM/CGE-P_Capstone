@@ -17,7 +17,7 @@ done
 [[ -z "$WORKSPACE" ]] && { echo "Usage: $0 --workspace <path>" >&2; exit 2; }
 mkdir -p "$EVIDENCE_DIR"
 
-( cd "$WORKSPACE" && terraform show -json tfplan > "$WORKSPACE/plan.json" )
+( cd "$WORKSPACE" && terraform show -json tfplan > plan.json )
 
 EXIT=0
 {
