@@ -1,0 +1,2 @@
+exclude:
+  - aws-s3-encryption-customer-key  # AES256 chosen for lab scope; KMS deferred, tracked as known gap (Lab 4.3)
