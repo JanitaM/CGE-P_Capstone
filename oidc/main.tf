@@ -17,6 +17,10 @@ variable "environment" {
   type    = string
   default = "dev"
 }
+variable "vault_name" {
+  type        = string
+  description = "S3 bucket name of the GRC evidence vault (terraform/primitives/evidence-vault output vault_name)."
+}
 
 resource "aws_iam_openid_connect_provider" "github" {
   url             = "https://token.actions.githubusercontent.com"
@@ -78,6 +82,29 @@ resource "aws_iam_role_policy" "grc_gate_scoped" {
       Resource = [
         "arn:aws:s3:::${var.project_name}-${var.environment}-data-*",
         "arn:aws:s3:::${var.project_name}-${var.environment}-logs-*"
+      ]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "grc_gate_evidence_vault" {
+  name = "cgep-grc-gate-evidence-vault"
+  role = aws_iam_role.grc_gate.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid    = "EvidenceVaultWrite"
+      Effect = "Allow"
+      Action = [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:GetObjectRetention"
+      ]
+      Resource = [
+        "arn:aws:s3:::${var.vault_name}",
+        "arn:aws:s3:::${var.vault_name}/*"
       ]
     }]
   })
